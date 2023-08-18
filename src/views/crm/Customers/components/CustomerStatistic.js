@@ -54,14 +54,11 @@ const StatisticCard = (props) => {
     )
 }
 
-const CustomerStatistic = () => {
+const CustomerStatistic = ({ users, loading }) => {
     const dispatch = useDispatch()
 
     const statisticData = useSelector(
         (state) => state.crmCustomers.data.statisticData
-    )
-    const loading = useSelector(
-        (state) => state.crmCustomers.data.statisticLoading
     )
 
     useEffect(() => {
@@ -75,15 +72,14 @@ const CustomerStatistic = () => {
                 icon={<HiOutlineUserGroup />}
                 avatarClass="!bg-indigo-600"
                 label="Total Customers"
-                value={statisticData?.totalCustomers?.value}
-                growthRate={statisticData?.totalCustomers?.growShrink}
+                value={users.length}
                 loading={loading}
             />
             <StatisticCard
                 icon={<HiOutlineUsers />}
                 avatarClass="!bg-blue-500"
                 label="Active Customers"
-                value={statisticData?.activeCustomers?.value}
+                value={users.filter((active) => active.isActive).length}
                 growthRate={statisticData?.activeCustomers?.growShrink}
                 loading={loading}
             />
@@ -91,7 +87,7 @@ const CustomerStatistic = () => {
                 icon={<HiOutlineUserAdd />}
                 avatarClass="!bg-emerald-500"
                 label="New Customers"
-                value={statisticData?.newCustomers?.value}
+                value={users.length}
                 growthRate={statisticData?.newCustomers?.growShrink}
                 loading={loading}
             />

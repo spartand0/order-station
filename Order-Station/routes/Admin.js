@@ -12,6 +12,10 @@ const {
   udpateCompany,
   viewCompany,
   createUser,
+  getOrders,
+  getOrder,
+  allUsers,
+  getProducts
 } = require("../controllers/Admin.controller");
 const { isAdmin } = require("../middlewares/Admin/isAdmin");
 const { isFeature } = require("../middlewares/Company/isFeature");
@@ -31,7 +35,7 @@ Admin.post("/changePassword", use(isAdmin), use(changePassword));
 /* CRUD Company */
 Admin.get(
   "/getCompanies",
-  use(isAdmin),
+  // use(isAdmin),
   // use(isFeature("Company", "read")),
   use(getCompanies)
 );
@@ -67,5 +71,28 @@ Admin.post(
   // use(isFeature("Employees", "create")),
   use(createUser)
 );
-
+Admin.get(
+  "/getOrders",
+  // use(isAdmin),
+  // use(isFeature("Company", "read")),
+  use(getOrders)
+);
+Admin.get(
+  "/getOrder/:id",
+  // use(isAdmin),
+  // use(isFeature("Company", "read")),
+  use(getOrder)
+);
+Admin.get(
+  "/allUsers",
+  // use(isAdmin),
+  // use(isFeature("Company", "read")),
+  use(allUsers)
+);
+Admin.get(
+  "/getProducts",
+  // use(isAdmin),
+  // use(isFeature("Company", "read")),
+  use(getProducts)
+);
 module.exports = Admin;

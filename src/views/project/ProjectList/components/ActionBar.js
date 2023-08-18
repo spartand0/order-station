@@ -50,7 +50,7 @@ const ActionBar = () => {
 
     return (
         <div className="lg:flex items-center justify-between mb-4">
-            <h3 className="mb-4 lg:mb-0">Project List</h3>
+            <h3 className="mb-4 lg:mb-0">Companies list</h3>
             <div className="flex flex-col md:flex-row md:items-center gap-1">
                 <Input
                     ref={inputRef}
@@ -95,7 +95,7 @@ const ActionBar = () => {
                     icon={<HiOutlinePlusCircle />}
                     onClick={onAddNewProject}
                 >
-                    New Project
+                    Add company
                 </Button>
             </div>
         </div>

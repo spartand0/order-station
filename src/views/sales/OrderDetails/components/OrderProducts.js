@@ -51,7 +51,7 @@ const OrderProducts = ({ data }) => {
         () => [
             {
                 header: 'Product',
-                accessorKey: 'name',
+                accessorKey: 'id',
                 cell: (props) => {
                     const row = props.row.original
                     return <ProductColumn row={row} />
@@ -62,7 +62,7 @@ const OrderProducts = ({ data }) => {
                 accessorKey: 'price',
                 cell: (props) => {
                     const row = props.row.original
-                    return <PriceAmount amount={row.price} />
+                    return <PriceAmount amount={10} />
                 },
             },
             {
@@ -74,7 +74,7 @@ const OrderProducts = ({ data }) => {
                 accessorKey: 'total',
                 cell: (props) => {
                     const row = props.row.original
-                    return <PriceAmount amount={row.price} />
+                    return <PriceAmount amount={10} />
                 },
             },
         ],

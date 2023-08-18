@@ -12,6 +12,7 @@ import { apiGetSalesOrderDetails } from 'services/SalesService'
 import { useLocation } from 'react-router-dom'
 import isEmpty from 'lodash/isEmpty'
 import dayjs from 'dayjs'
+import axios from 'axios'
 
 const paymentStatus = {
     0: {
@@ -52,10 +53,11 @@ const OrderDetails = () => {
         )
         if (id) {
             setLoading(true)
-            const response = await apiGetSalesOrderDetails({ id })
+            const response = await axios.get(`http://localhost:5000/api/admin/getOrder/${ id }`)
             if (response) {
+                console.log(response.data.data)
                 setLoading(false)
-                setData(response.data)
+                setData(response.data.data)
             }
         }
     }
@@ -73,7 +75,7 @@ const OrderDetails = () => {
                                         #{data.id}
                                     </span>
                                 </h3>
-                                <Tag
+                                {/* <Tag
                                     className={classNames(
                                         'border-0 rounded-md ltr:ml-2 rtl:mr-2',
                                         paymentStatus[data.payementStatus].class
@@ -89,27 +91,26 @@ const OrderDetails = () => {
                                     )}
                                 >
                                     {progressStatus[data.progressStatus].label}
-                                </Tag>
+                                </Tag> */}
                             </div>
                             <span className="flex items-center">
                                 <HiOutlineCalendar className="text-lg" />
                                 <span className="ltr:ml-1 rtl:mr-1">
                                     {dayjs
-                                        .unix(data.dateTime)
+                                        (data.createdAt)
                                         .format('ddd DD-MMM-YYYY, hh:mm A')}
                                 </span>
                             </span>
                         </div>
                         <div className="xl:flex gap-4">
                             <div className="w-full">
-                                <OrderProducts data={data.product} />
+                                <OrderProducts data={data.products} />
                                 <div className="xl:grid grid-cols-2 gap-4">
-                                    <ShippingInfo data={data.shipping} />
-                                    <PaymentSummary
+                                    {/* <PaymentSummary
                                         data={data.paymentSummary}
-                                    />
+                                    /> */}
                                 </div>
-                                <Activity data={data.activity} />
+                                <Activity data={data.jumiaStatusFlow} />
                             </div>
                             <div className="xl:max-w-[360px] w-full">
                                 <CustomerInfo data={data.customer} />

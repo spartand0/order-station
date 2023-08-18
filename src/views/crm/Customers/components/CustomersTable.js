@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo } from 'react'
+import React, { useEffect, useCallback, useMemo, useState } from 'react'
 import { Avatar, Badge } from 'components/ui'
 import { DataTable } from 'components/shared'
 import { useDispatch, useSelector } from 'react-redux'
@@ -12,10 +12,11 @@ import CustomerEditDialog from './CustomerEditDialog'
 import { Link } from 'react-router-dom'
 import dayjs from 'dayjs'
 import cloneDeep from 'lodash/cloneDeep'
+import axios from 'axios'
 
 const statusColor = {
-    active: 'bg-emerald-500',
-    blocked: 'bg-red-500',
+    true: 'bg-emerald-500',
+    false: 'bg-red-500',
 }
 
 const ActionColumn = ({ row }) => {
@@ -73,22 +74,22 @@ const columns = [
             const row = props.row.original
             return (
                 <div className="flex items-center">
-                    <Badge className={statusColor[row.status]} />
+                    <Badge className={statusColor[row.isActive]} />
                     <span className="ml-2 rtl:mr-2 capitalize">
-                        {row.status}
+                        {row.isActive ? "active" : "blocked"}
                     </span>
                 </div>
             )
         },
     },
     {
-        header: 'Last online',
-        accessorKey: 'lastOnline',
+        header: 'Role',
+        accessorKey: 'role',
         cell: (props) => {
             const row = props.row.original
             return (
                 <div className="flex items-center">
-                    {dayjs.unix(row.lastOnline).format('MM/DD/YYYY')}
+                    {row.role}
                 </div>
             )
         },
@@ -100,10 +101,10 @@ const columns = [
     },
 ]
 
-const Customers = () => {
+const Customers = ({users,loading}) => {
+
     const dispatch = useDispatch()
     const data = useSelector((state) => state.crmCustomers.data.customerList)
-    const loading = useSelector((state) => state.crmCustomers.data.loading)
     const filterData = useSelector(
         (state) => state.crmCustomers.data.filterData
     )
@@ -148,7 +149,7 @@ const Customers = () => {
         <>
             <DataTable
                 columns={columns}
-                data={data}
+                data={users}
                 skeletonAvatarColumns={[0]}
                 skeletonAvatarProps={{ width: 28, height: 28 }}
                 loading={loading}

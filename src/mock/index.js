@@ -50,58 +50,58 @@ import {
 const { apiPrefix } = appConfig
 
 export default function mockServer({ environment = 'test' }) {
-    return createServer({
-        environment,
-        seeds(server) {
-            server.db.loadData({
-                notificationListData,
-                searchQueryPoolData,
-                projectList,
-                scrumboardData,
-                issueData,
-                usersData,
-                userDetailData,
-                eventsData,
-                mailData,
-                productsData,
-                ordersData,
-                orderDetailsData,
-                settingData,
-                settingIntergrationData,
-                settingBillingData,
-                invoiceData,
-                logData,
-                accountFormData,
-                portfolioData,
-                walletsData,
-                marketData,
-                transactionHistoryData,
-                helpCenterCategoriesData,
-                helpCenterArticleListData,
-                signInUserData,
-                salesDashboardData,
-                crmDashboardData,
-                projectDashboardData,
-                cryptoDashboardData,
-            })
-        },
-        routes() {
-            this.urlPrefix = ''
-            this.namespace = ''
-            this.passthrough((request) => {
-                let isExternal = request.url.startsWith('http')
-                return isExternal
-            })
-            this.passthrough()
+    // return createServer({
+    //     environment,
+    //     seeds(server) {
+    //         server.db.loadData({
+    //             notificationListData,
+    //             searchQueryPoolData,
+    //             projectList,
+    //             scrumboardData,
+    //             issueData,
+    //             usersData,
+    //             userDetailData,
+    //             eventsData,
+    //             mailData,
+    //             productsData,
+    //             ordersData,
+    //             orderDetailsData,
+    //             settingData,
+    //             settingIntergrationData,
+    //             settingBillingData,
+    //             invoiceData,
+    //             logData,
+    //             accountFormData,
+    //             portfolioData,
+    //             walletsData,
+    //             marketData,
+    //             transactionHistoryData,
+    //             helpCenterCategoriesData,
+    //             helpCenterArticleListData,
+    //             signInUserData,
+    //             salesDashboardData,
+    //             crmDashboardData,
+    //             projectDashboardData,
+    //             cryptoDashboardData,
+    //         })
+    //     },
+    //     routes() {
+    //         this.urlPrefix = ''
+    //         this.namespace = ''
+    //         this.passthrough((request) => {
+    //             let isExternal = request.url.startsWith('http')
+    //             return isExternal
+    //         })
+    //         this.passthrough()
 
-            commonFakeApi(this, apiPrefix)
-            projectFakeApi(this, apiPrefix)
-            crmFakeApi(this, apiPrefix)
-            salesFakeApi(this, apiPrefix)
-            accountFakeApi(this, apiPrefix)
-            authFakeApi(this, apiPrefix)
-            cryptoFakeApi(this, apiPrefix)
-            knowledgeBaseFakeApi(this, apiPrefix)
-        },
-    })
+    //         commonFakeApi(this, apiPrefix)
+    //         projectFakeApi(this, apiPrefix)
+    //         crmFakeApi(this, apiPrefix)
+    //         salesFakeApi(this, apiPrefix)
+    //         accountFakeApi(this, apiPrefix)
+    //         authFakeApi(this, apiPrefix)
+    //         cryptoFakeApi(this, apiPrefix)
+    //         knowledgeBaseFakeApi(this, apiPrefix)
+    //     },
+    // })
 }

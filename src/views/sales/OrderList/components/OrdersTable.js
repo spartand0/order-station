@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo, useRef } from 'react'
+import React, { useEffect, useCallback, useMemo, useRef, useState } from 'react'
 import { Badge, Tooltip } from 'components/ui'
 import { DataTable } from 'components/shared'
 import { HiOutlineEye, HiOutlineTrash } from 'react-icons/hi'
@@ -16,10 +16,11 @@ import useThemeClass from 'utils/hooks/useThemeClass'
 import { useNavigate } from 'react-router-dom'
 import cloneDeep from 'lodash/cloneDeep'
 import dayjs from 'dayjs'
+import axios from 'axios'
 
 const orderStatusColor = {
     0: {
-        label: 'Paid',
+        label: 'completed',
         dotClass: 'bg-emerald-500',
         textClass: 'text-emerald-500',
     },
@@ -67,7 +68,8 @@ const OrderColumn = ({ row }) => {
     const navigate = useNavigate()
 
     const onView = useCallback(() => {
-        navigate(`/app/sales/order-details/${row.id}`)
+        navigate(`#`)
+        // navigate(`/app/sales/order-details/${row.id}`)
     }, [navigate, row])
 
     return (
@@ -91,7 +93,8 @@ const ActionColumn = ({ row }) => {
     }
 
     const onView = useCallback(() => {
-        navigate(`/app/sales/order-details/${row.id}`)
+        navigate(`#`)
+        // navigate(`/app/sales/order-details/${row.id}`)
     }, [navigate, row])
 
     return (
@@ -117,6 +120,16 @@ const ActionColumn = ({ row }) => {
 }
 
 const OrdersTable = () => {
+    const [orders,setOrders] = useState([])
+    const [loading,setLoading] = useState(true)
+    useEffect(() => {
+        axios.get('http://localhost:5000/api/admin/getOrders').then(res=>{
+            setOrders(res.data.data)
+            setLoading(false)
+            console.log(res.data.data)
+        })
+    }, [])
+    
 
     const tableRef = useRef(null)
 
@@ -125,7 +138,6 @@ const OrdersTable = () => {
     const { pageIndex, pageSize, sort, query, total } = useSelector(
         (state) => state.salesOrderList.data.tableData
     )
-    const loading = useSelector((state) => state.salesOrderList.data.loading)
 
     const data = useSelector((state) => state.salesOrderList.data.orderList)
 
@@ -153,8 +165,8 @@ const OrdersTable = () => {
         () => [
             {
                 header: 'Order',
-                accessorKey: 'id',
-                cell: (props) => <OrderColumn row={props.row.original} />,
+                accessorKey: 'reference',
+                // cell: (props) => <OrderColumn row={props.row.original} />,
             },
             {
                 header: 'Date',
@@ -162,13 +174,13 @@ const OrdersTable = () => {
                 cell: (props) => {
                     const row = props.row.original
                     return (
-                        <span>{dayjs.unix(row.date).format('DD/MM/YYYY')}</span>
+                        <span>{dayjs(row.createdAt).format('DD/MM/YYYY')}</span>
                     )
                 },
             },
             {
                 header: 'Customer',
-                accessorKey: 'customer',
+                accessorKey: 'customerName',
             },
             {
                 header: 'Status',
@@ -178,48 +190,33 @@ const OrdersTable = () => {
                     return (
                         <div className="flex items-center">
                             <Badge
-                                className={orderStatusColor[status].dotClass}
+                                className="bg-amber-500"
                             />
                             <span
-                                className={`ml-2 rtl:mr-2 capitalize font-semibold ${orderStatusColor[status].textClass}`}
+                                className={`ml-2 rtl:mr-2 capitalize font-semibold`}
                             >
-                                {orderStatusColor[status].label}
+                                { status }
                             </span>
                         </div>
                     )
                 },
             },
             {
-                header: 'Payment Method',
-                accessorKey: 'paymentMehod',
-                cell: (props) => {
-                    const { paymentMehod, paymentIdendifier } =
-                        props.row.original
-                    return (
-                        <span className="flex items-center">
-                            <PaymentMethodImage
-                                className="max-h-[20px]"
-                                paymentMehod={paymentMehod}
-                            />
-                            <span className="ltr:ml-2 rtl:mr-2">
-                                {paymentIdendifier}
-                            </span>
-                        </span>
-                    )
-                },
+                header: 'Platform',
+                accessorKey: 'platform',
+              
             },
             {
                 header: 'Total',
                 accessorKey: 'totalAmount',
                 cell: (props) => {
-                    const { totalAmount } = props.row.original
+                    const { totalPrice } = props.row.original
                     return (
                         <NumberFormat
                             displayType="text"
                             value={(
-                                Math.round(totalAmount * 100) / 100
+                                Math.round(totalPrice * 100) / 100
                             ).toFixed(2)}
-                            prefix={'$'}
                             thousandSeparator={true}
                         />
                     )
@@ -281,7 +278,7 @@ const OrdersTable = () => {
         <DataTable
             ref={tableRef}
             columns={columns}
-            data={data}
+            data={orders}
             loading={loading}
             pagingData={tableData}
             onPaginationChange={onPaginationChange}

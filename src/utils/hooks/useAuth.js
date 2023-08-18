@@ -6,6 +6,7 @@ import appConfig from 'configs/app.config'
 import { REDIRECT_URL_KEY } from 'constants/app.constant'
 import { useNavigate } from 'react-router-dom'
 import useQuery from './useQuery'
+import axios from 'axios'
 
 function useAuth() {
     const dispatch = useDispatch()
@@ -18,7 +19,10 @@ function useAuth() {
 
     const signIn = async (values) => {
         try {
-            const resp = await apiSignIn(values)
+            const resp = await axios.post(
+                'http://localhost:5000/api/admin/login',
+                values
+            )
             if (resp.data) {
                 const { token } = resp.data
                 dispatch(onSignInSuccess(token))
@@ -93,7 +97,6 @@ function useAuth() {
     }
 
     const signOut = async () => {
-        await apiSignOut()
         handleSignOut()
     }
 

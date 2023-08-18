@@ -14,7 +14,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 const inventoryStatusColor = {
     0: {
-        label: 'In Stock',
+        label: 'isAvailable',
         dotClass: 'bg-emerald-500',
         textClass: 'text-emerald-500',
     },
@@ -63,8 +63,8 @@ const ActionColumn = ({ row }) => {
 }
 
 const ProductColumn = ({ row }) => {
-    const avatar = row.img ? (
-        <Avatar src={row.img} />
+    const avatar = row.image ? (
+        <Avatar src={row.image} />
     ) : (
         <Avatar icon={<FiPackage />} />
     )
@@ -77,7 +77,7 @@ const ProductColumn = ({ row }) => {
     )
 }
 
-const ProductTable = () => {
+const ProductTable = ({products,loading}) => {
 
     const tableRef = useRef(null)
 
@@ -91,7 +91,6 @@ const ProductTable = () => {
         (state) => state.salesProductList.data.filterData
     )
 
-    const loading = useSelector((state) => state.salesProductList.data.loading)
     
     const data = useSelector((state) => state.salesProductList.data.productList)
 
@@ -126,34 +125,34 @@ const ProductTable = () => {
                 },
             },
             {
-                header: 'Category',
-                accessorKey: 'category',
+                header: 'Description',
+                accessorKey: 'description',
                 cell: (props) => {
                     const row = props.row.original
-                    return <span className="capitalize">{row.category}</span>
+                    return <span className="capitalize">{row.description}</span>
                 },
             },
             {
-                header: 'Quantity',
-                accessorKey: 'stock',
+                header: 'Imported from',
+                accessorKey: 'importedFrom',
                 sortable: true,
             },
             {
                 header: 'Status',
                 accessorKey: 'status',
                 cell: (props) => {
-                    const { status } = props.row.original
+                    const { isAvailable } = props.row.original
                     return (
                         <div className="flex items-center gap-2">
                             <Badge
                                 className={
-                                    inventoryStatusColor[status].dotClass
+                                    isAvailable ? "bg-emerald-500" : "bg-red-500"
                                 }
                             />
                             <span
-                                className={`capitalize font-semibold ${inventoryStatusColor[status].textClass}`}
+                                className={`capitalize font-semibold ${isAvailable ? "text-emerald-500" : "text-red-500"}`}
                             >
-                                {inventoryStatusColor[status].label}
+                                {isAvailable ? "available" : "not available"}
                             </span>
                         </div>
                     )
@@ -164,7 +163,15 @@ const ProductTable = () => {
                 accessorKey: 'price',
                 cell: (props) => {
                     const { price } = props.row.original
-                    return <span>${price}</span>
+                    return <span>{price}</span>
+                },
+            },
+            {
+                header: 'promo',
+                accessorKey: 'promoPrice',
+                cell: (props) => {
+                    const { promoPrice } = props.row.original
+                    return <span>{promoPrice ? promoPrice: "no promo"}</span>
                 },
             },
             {
@@ -200,7 +207,7 @@ const ProductTable = () => {
             <DataTable
                 ref={tableRef}
                 columns={columns}
-                data={data}
+                data={products}
                 skeletonAvatarColumns={[0]}
                 skeletonAvatarProps={{ className: 'rounded-md' }}
                 loading={loading}
